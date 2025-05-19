@@ -484,7 +484,7 @@ export default class ImageTool implements BlockTool {
 
   /**
    * Fetch the real image URL from backend using the image id
-   * Assumes config.endpoints.byId is set and accepts POST { id }
+   * Assumes config.endpoints.byId is set and accepts GET { id }
    */
   private async fetchImageUrlById(id: string): Promise<string | undefined> {
     if (!this.config.endpoints.byId) {
@@ -492,19 +492,25 @@ export default class ImageTool implements BlockTool {
       return undefined;
     }
     try {
-      const response = await fetch(this.config.endpoints.byId, {
-        method: "POST",
+      // Build the URL with id as a query parameter
+      const url = new URL(this.config.endpoints.byId);
+      url.searchParams.append("id", id);
+      // Optionally add additionalRequestData as query params
+      if (this.config.additionalRequestData) {
+        Object.entries(this.config.additionalRequestData).forEach(
+          ([key, value]) => {
+            url.searchParams.append(key, String(value));
+          }
+        );
+      }
+      const response = await fetch(url.toString(), {
+        method: "GET",
         headers: {
-          "Content-Type": "application/json",
           ...((this.config.additionalRequestHeaders as Record<
             string,
             string
           >) || {}),
         },
-        body: JSON.stringify({
-          id,
-          ...(this.config.additionalRequestData || {}),
-        }),
       });
       const data = await response.json();
       return data.url;
