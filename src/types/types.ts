@@ -1,4 +1,4 @@
-import type { HTMLPasteEventDetail } from '@editorjs/editorjs';
+import type { HTMLPasteEventDetail } from "@editorjs/editorjs";
 
 /**
  * Represents options for uploading, including a function to handle previewing.
@@ -40,7 +40,7 @@ export interface ActionConfig {
    * An optional action function to be executed when the tune is activated.
    */
   action?: Function;
-};
+}
 
 /**
  * UploadResponseFormat interface representing the response format expected from the backend on file uploading.
@@ -57,10 +57,8 @@ export interface UploadResponseFormat<AdditionalFileData = {}> {
    *             also can contain any additional data that will be saved and passed back
    */
   file: {
-    /**
-     * The URL of the uploaded image.
-     */
-    url: string;
+    id: string;
+    url?: string;
   } & AdditionalFileData;
 }
 
@@ -93,10 +91,8 @@ export type ImageToolData<Actions = {}, AdditionalFileData = {}> = {
    * Also can contain any additional data.
    */
   file: {
-    /**
-     * The URL of the image.
-     */
-    url: string;
+    id: string;
+    url?: string;
   } & AdditionalFileData;
 } & (Actions extends Record<string, boolean> ? Actions : {});
 
@@ -116,7 +112,7 @@ export type FeaturesConfig = {
    * Flag to enable/disable caption.
    * Can be set to 'optional' to allow users to toggle via block tunes.
    */
-  caption?: boolean | 'optional';
+  caption?: boolean | "optional";
   /**
    * Flag to enable/disable tune - stretched
    */
@@ -132,7 +128,6 @@ export interface ImageConfig {
    * Endpoints for upload, whether using file or URL.
    */
   endpoints: {
-
     /**
      * Endpoint for file upload.
      */
@@ -142,6 +137,11 @@ export interface ImageConfig {
      * Endpoints for URL upload.
      */
     byUrl?: string;
+
+    /**
+     * Endpoint for fetching the real image URL by id.
+     */
+    byId?: string;
   };
 
   /**
@@ -178,7 +178,6 @@ export interface ImageConfig {
    * Optional custom uploader.
    */
   uploader?: {
-
     /**
      * Method to upload an image by file.
      */
@@ -221,8 +220,6 @@ export interface HTMLPasteEventDetailExtended extends HTMLPasteEventDetail {
  * Parameter type of Image setter function in ImageTool
  */
 export type ImageSetterParam = {
-  /**
-   * url path of the image
-   */
-  url: string;
+  id: string;
+  url?: string;
 };
